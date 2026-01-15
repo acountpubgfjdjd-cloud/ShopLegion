@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Black Service List</title>
+    <style>
+        /* --- Базовые настройки --- */
+        * {
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #050505; /* Почти черный */
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace; /* Хакерский стиль */
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- Фон (Снег) --- */
+        canvas#snow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none; /* Чтобы можно было кликать сквозь снег */
+        }
+
+        /* --- Контейнер (Карточка) --- */
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 450px; /* Макс ширина для ПК */
+            background: rgba(20, 20, 20, 0.85); /* Полупрозрачный черный */
+            backdrop-filter: blur(8px); /* Эффект размытия фона */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0; /* Строгие углы */
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            margin: 20px;
+        }
+
+        /* --- Заголовки --- */
+        h1 {
+            text-align: center;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            color: #ccc;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+
+        .category-title {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        /* --- Список услуг --- */
+        .service-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 12px;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .service-row::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px dashed #333;
+            margin: 0 10px 4px 10px; /* Линия между названием и ценой */
+        }
+
+        .name {
+            color: #e0e0e0;
+            white-space: nowrap; /* Не переносить текст */
+        }
+
+        .price {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* --- Опасные услуги (Красный акцент) --- */
+        .danger-zone .name {
+            color: #ff3b3b;
+            text-shadow: 0 0 5px rgba(255, 59, 59, 0.3);
+        }
+        .danger-zone .price {
+            color: #ff3b3b;
+        }
+        
+        .long-text {
+            white-space: normal; /* Разрешить перенос для длинного текста */
+            font-size: 12px;
+            line-height: 1.4;
+            max-width: 80%;
+        }
+
+        /* --- Кнопка ОБНОВЫ --- */
+        .btn-update {
+            display: block;
+            width: 100%;
+            margin-top: 35px;
+            padding: 15px 0;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            text-transform: uppercase;
+            font-family: inherit;
+            letter-spacing: 3px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-update:hover {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-update:active {
+            transform: scale(0.98);
+        }
+
+        /* --- Адаптация под телефон (Медиа-запрос) --- */
+        @media (max-width: 480px) {
+            .container {
+                margin: 0;
+                min-height: 100vh; /* На телефоне на весь экран */
+                border: none;
+                border-radius: 0;
+                padding: 20px;
+                padding-top: 40px;
+            }
+            
+            .service-row {
+                font-size: 13px; /* Чуть меньше шрифт */
+            }
+            
+            h1 {
+                font-size: 16px;
+            }
+            
+            .service-row::after {
+                display: none; /* Убираем пунктир на телефоне для чистоты */
+            }
+            
+            .name {
+                white-space: normal; /* Разрешаем перенос названий */
+                padding-right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="snow"></canvas>
+
+    <div class="container">
+        <h1>Прайс Услуг</h1>
+
+        <div class="category-title">/// Досье</div>
+        <div class="service-row">
+            <span class="name">Оперативное досье</span>
+            <span class="price">39.99$</span>
+        </div>
+        <div class="service-row">
+            <span class="name">Информационное досье</span>
+            <span class="price">20.00$</span>
+        </div>
+        <div class="service-row">
+            <span class="name">Лайт досье</span>
+            <span class="price">8.99$</span>
+        </div>
+
+        <div class="category-title">/// Защита</div>
+        <div class="service-row">
+            <span class="name">Месяц</span>
+            <span class="price">10.00$</span>
+        </div>
+        <div class="service-row">
+            <span class="name">Навсегда</span>
+            <span class="price">20.99$</span>
+        </div>
+        <div class="service-row">
+            <span class="name">Сотрудничество</span>
+            <span class="price">59.99$</span>
+        </div>
+
+        <div class="category-title" style="color: #900;">/// Особые меры</div>
+        <div class="service-row danger-zone">
+            <span class="name">Поджог двери!</span>
+            <span class="price">249.99$</span>
+        </div>
+        <div class="service-row danger-zone">
+            <span class="name">Донос</span>
+            <span class="price">8.99$</span>
+        </div>
+        <div class="service-row danger-zone">
+            <span class="name long-text">Полное неполадочное состояние с законом (Total Chaos)</span>
+            <span class="price">50.00$</span>
+        </div>
+
+        <button class="btn-update">Обновить статус</button>
+    </div>
+
+    <script>
+        // Скрипт падающего снега
+        (function() {
+            var canvas = document.getElementById('snow'),
+                ctx = canvas.getContext('2d'),
+                width = ctx.canvas.width = window.innerWidth,
+                height = ctx.canvas.height = window.innerHeight,
+                animFrame = window.requestAnimationFrame || function(callback) { window.setTimeout(callback, 1000/60); };
+
+            var snowflakes = [];
+
+            function resize() {
+                width = ctx.canvas.width = window.innerWidth;
+                height = ctx.canvas.height = window.innerHeight;
+            }
+
+            window.onresize = resize;
+
+            function update() {
+                ctx.clearRect(0, 0, width, height);
+                
+                // Добавляем снежинки (чем меньше число, тем меньше снега)
+                if (snowflakes.length < 100) { 
+                    snowflakes.push({
+                        x: Math.random() * width,
+                        y: 0,
+                        speed: Math.random() * 1 + 0.5, // Скорость падения
+                        radius: Math.random() * 2, // Размер снежинок
+                        drift: Math.random() // Для смещения по горизонтали
+                    });
+                }
+
+                for (var i = 0; i < snowflakes.length; i++) {
+                    var p = snowflakes[i];
+                    
+                    ctx.beginPath();
+                    ctx.fillStyle = "rgba(255, 255, 255, " + (Math.random() * 0.5 + 0.1) + ")"; // Прозрачность
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2, true);
+                    ctx.fill();
+
+                    p.y += p.speed;
+                    p.x += Math.sin(p.drift) * 0.5; // Легкое покачивание
+                    p.drift += 0.01;
+
+                    if (p.y > height) {
+                        snowflakes.splice(i, 1);
+                        i--;
+                    }
+                }
+                animFrame(update);
+            }
+            
+            update();
+        })();
+    </script>
+</body>
+</html>
